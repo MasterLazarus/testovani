@@ -57,7 +57,7 @@
         </div>
       </section>
 
-      <section class="window" id="minesweeper" style="left: 30%; top: 18%; width: 290px; display:none;">
+      <section class="window" id="minesweeper" style="left: 30%; top: 18%; width: 380px; display:none;">
         <header class="title-bar" data-drag-handle>
           <h1>Minesweeper</h1>
           <div class="window-controls">
@@ -65,14 +65,22 @@
             <button class="control" data-action="close" aria-label="Zavřít">✕</button>
           </div>
         </header>
-        <div class="window-body">
-          <p class="hint">Klasický vzhled, moderní pravidla vynechána 🙂</p>
-          <div class="mines-grid" aria-hidden="true">
-            <span>1</span><span>■</span><span>1</span><span> </span><span> </span>
-            <span>2</span><span>💣</span><span>2</span><span>1</span><span>1</span>
-            <span>2</span><span>💣</span><span>3</span><span>2</span><span>💣</span>
-            <span>1</span><span>1</span><span>2</span><span>💣</span><span>2</span>
-            <span> </span><span> </span><span>1</span><span>1</span><span>1</span>
+        <div class="window-body minesweeper-body">
+          <div class="mines-toolbar">
+            <label for="difficulty">Obtížnost:</label>
+            <select id="difficulty" aria-label="Volba obtížnosti">
+              <option value="easy">Lehká (9×9, 10 min)</option>
+              <option value="hard">Těžká (14×14, 38 min)</option>
+            </select>
+            <button id="new-game-btn">Nová hra</button>
+          </div>
+          <div class="mines-status">
+            <span id="mine-counter" aria-live="polite">💣 0</span>
+            <span id="game-message" aria-live="polite">Levé kliknutí odhalí pole, pravé položí vlaječku.</span>
+            <span id="timer" aria-live="polite">⏱️ 0s</span>
+          </div>
+          <div class="mines-board-wrap">
+            <div class="mines-grid" id="mines-grid" role="grid" aria-label="Herní pole Minesweeper"></div>
           </div>
         </div>
       </section>
