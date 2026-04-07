@@ -124,18 +124,92 @@ textarea {
 
 .mines-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
   border: 2px inset #fff;
   background: #bdbdbd;
+  user-select: none;
 }
 
-.mines-grid span {
-  width: 100%;
-  aspect-ratio: 1;
+.minesweeper-body {
+  display: grid;
+  gap: 8px;
+}
+
+.mines-toolbar {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.mines-toolbar select {
+  border: 2px inset #fff;
+  background: #fff;
+  font-family: inherit;
+  padding: 2px 4px;
+}
+
+.mines-status {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: center;
+  border: 2px inset #fff;
+  background: #d6d6d6;
+  padding: 4px 6px;
+}
+
+#game-message {
+  font-size: 0.85rem;
+  text-align: center;
+  flex: 1;
+}
+
+.mines-board-wrap {
+  overflow: auto;
+  max-height: 390px;
+}
+
+.cell {
+  width: 26px;
+  height: 26px;
   display: grid;
   place-items: center;
-  border: 1px solid #8d8d8d;
+  border-top: 2px solid var(--highlight);
+  border-left: 2px solid var(--highlight);
+  border-right: 2px solid #000;
+  border-bottom: 2px solid #000;
   font-weight: 700;
+  font-size: 0.9rem;
+  line-height: 1;
+  cursor: pointer;
+  background: #c0c0c0;
+}
+
+.cell.revealed {
+  border: 1px solid #8a8a8a;
+  background: #d9d9d9;
+  cursor: default;
+}
+
+.cell.is-mine.revealed {
+  background: #d22;
+}
+
+.cell.flagged {
+  color: #b40000;
+}
+
+.cell.n1 { color: #1a52ff; }
+.cell.n2 { color: #237a1b; }
+.cell.n3 { color: #b10505; }
+.cell.n4 { color: #1e1e80; }
+.cell.n5 { color: #7d1f1f; }
+.cell.n6 { color: #157979; }
+.cell.n7 { color: #000; }
+.cell.n8 { color: #555; }
+
+.game-won .cell:not(.is-mine) {
+  background: #dbf0db;
 }
 
 .about {
