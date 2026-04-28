@@ -12,10 +12,27 @@ const steps = [
   'Rekapitulace'
 ];
 
+type FormState = {
+  serviceTypeId: string;
+  firstName: string;
+  lastName: string;
+  birthDate: string;
+  phone: string;
+  email: string;
+  address: string;
+  preferredDate: string;
+  healthNote: string;
+  contactName: string;
+  contactPhone: string;
+  consentMedical: boolean;
+  consentData: boolean;
+};
+
 export default function OrderWizardPage() {
   const [step, setStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
-  const [form, setForm] = useState({
+  const [stepError, setStepError] = useState('');
+  const [form, setForm] = useState<FormState>({
     serviceTypeId: 'svc-1',
     firstName: '',
     lastName: '',
@@ -36,11 +53,52 @@ export default function OrderWizardPage() {
     [form.serviceTypeId]
   );
 
-  const next = () => setStep((prev) => Math.min(prev + 1, steps.length - 1));
-  const prev = () => setStep((prev) => Math.max(prev - 1, 0));
+  const getStepError = (currentStep: number): string => {
+    if (currentStep === 1 && (!form.firstName.trim() || !form.lastName.trim() || !form.birthDate || !form.phone.trim())) {
+      return 'Vyplňte prosím jméno, příjmení, datum narození a telefon pacienta.';
+    }
+
+    if (currentStep === 2 && !form.address.trim()) {
+      return 'Vyplňte prosím adresu návštěvy.';
+    }
+
+    if (currentStep === 3 && !form.preferredDate) {
+      return 'Vyberte prosím preferovaný termín návštěvy.';
+    }
+
+    if (currentStep === 6 && (!form.consentMedical || !form.consentData)) {
+      return 'Pro pokračování je nutné potvrdit oba souhlasy.';
+    }
+
+    return '';
+  };
+
+  const next = () => {
+    const validationError = getStepError(step);
+    if (validationError) {
+      setStepError(validationError);
+      return;
+    }
+
+    setStepError('');
+    setStep((prev) => Math.min(prev + 1, steps.length - 1));
+  };
+
+  const prev = () => {
+    setStepError('');
+    setStep((prev) => Math.max(prev - 1, 0));
+  };
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
+
+    const validationError = getStepError(6);
+    if (validationError) {
+      setStepError(validationError);
+      return;
+    }
+
+    setStepError('');
     setSubmitted(true);
   };
 
@@ -68,16 +126,11 @@ export default function OrderWizardPage() {
 
       {step === 1 && (
         <div className="grid gap-3 md:grid-cols-2">
-          {['firstName', 'lastName', 'birthDate', 'phone', 'email'].map((field) => (
-            <input
-              key={field}
-              className="rounded-lg border p-3"
-              placeholder={field}
-              type={field === 'birthDate' ? 'date' : 'text'}
-              value={form[field as keyof typeof form] as string}
-              onChange={(e) => setForm({ ...form, [field]: e.target.value })}
-            />
-          ))}
+          <input className="rounded-lg border p-3" placeholder="Jméno" value={form.firstName} onChange={(e) => setForm({ ...form, firstName: e.target.value })} />
+          <input className="rounded-lg border p-3" placeholder="Příjmení" value={form.lastName} onChange={(e) => setForm({ ...form, lastName: e.target.value })} />
+          <input className="rounded-lg border p-3" type="date" value={form.birthDate} onChange={(e) => setForm({ ...form, birthDate: e.target.value })} />
+          <input className="rounded-lg border p-3" type="tel" placeholder="Telefon" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+          <input className="rounded-lg border p-3 md:col-span-2" type="email" placeholder="E-mail" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
         </div>
       )}
 
@@ -105,6 +158,8 @@ export default function OrderWizardPage() {
           <p><b>Poznámka:</b> {form.healthNote || 'bez poznámky'}</p>
         </div>
       )}
+
+      {stepError && <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{stepError}</p>}
 
       <div className="flex justify-between">
         <button type="button" onClick={prev} className="rounded-lg border px-4 py-2" disabled={step === 0}>Zpět</button>
